@@ -2,10 +2,9 @@ from static.modules.costant_var import *
 from flask import Flask , render_template, request, redirect
 from flask_pymongo import PyMongo
 from bson.json_util import loads, dumps
-from flask_login import login_required, login_user, LoginManager, logout_user, current_user, UserMixin
+from flask_login import login_required, login_user, LoginManager, logout_user, current_user, UserMixin,AnonymousUserMixin
 from flask_sqlalchemy import SQLAlchemy
 import time
-
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = SECRET_VAR["SECRET"]
@@ -15,6 +14,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["MONGO_URI"] = f"mongodb+srv://{SECRET_VAR['SERVER_NAME']}:{SECRET_VAR['SERVER_PASSWORD']}@workcalender-cluster.cuyvm.mongodb.net/workcalender"
 mongo = PyMongo(app)
 db = SQLAlchemy(app)
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -39,13 +39,13 @@ def user_():
                 continue
             login_user(user=user)
             global user_
-            user_ = "Okay"
+            user_ = current_user.name
             return redirect("/")
 
     return render_template("admin.html")
 
-@login_required
 @app.route("/logout")
+@login_required
 def logout():
     logout_user()
     global user_
@@ -55,6 +55,7 @@ def logout():
 
 @app.route("/", methods=["GET", "POST"])
 def main_projects():
+    print(user_)
     if request.method == "POST":
         id = request.form["id"]
         project_name = request.form["project_name"]
@@ -92,7 +93,7 @@ def main_project_make(id):
     main_projects.reverse()
     projects = mongo.db.main_projects.find_one({"id":id})
     projects= loads(dumps(projects))
-    return render_template("main_project_make.html", main_projects=main_projects,projects=projects, time=time.asctime(), user=user_)
+    return render_template("main_project_make.html", main_projects=main_projects,projects=projects, time=time.asctime(),user=user_)
 
 @app.route("/<int:id>/<int:id_no>", methods=["GET", "POST"])
 def sub_project_make(id,id_no):
@@ -119,7 +120,7 @@ def sub_project_make(id,id_no):
     sub_projects = mongo.db.sub_segments_projects.find({"id":id,"id_no":id_no})
     sub_projects = loads(dumps(sub_projects))
     sub_projects.reverse()
-    return render_template("sub_project_make.html", main_projects=main_projects, sub_projects=sub_projects, user=user_)
+    return render_template("sub_project_make.html", main_projects=main_projects, sub_projects=sub_projects, time=time.asctime(), user=user_)
 
 @app.route("/github_link/<int:id>/<int:id_no>/<int:sub_id_no>", methods=["GET", "POST"])
 def sub_project_link(id, id_no, sub_id_no):
@@ -153,4 +154,5 @@ def sub_project_link_(id, id_no, sub_id_no):
 
 
 if __name__=="__main__":
+    user_ = None
     app.run(port=1234, host="0.0.0.0",debug=True)
