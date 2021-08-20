@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %}
+| main_projects
+{% endblock title %}
+{% block body %}
+<section>
+    <div class="row">
+        <div class="col">
+            <div class="card-content">
+                <div class="card-body">
+                    <div style="text-align: center;">
+                        <p class="command">
+                        <h2>AIIM</h2>
+                        {% if user %}
+                        <h3>Create Your Organization Work Calender</h3>
+                    </p>
+                    <h1>Projects</h1>
+                </div>
+                <form action="/" method="POST" id='h1'>
+                    <div class="row">
+                        <div class="col-lg-4 mb-1">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Input ID" name="id">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-1">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Project Name" name="project_name">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-1">
+                            <div class="input-group mb-3">
+                                Start Date
+                                <input type="datetime-local" class="form-control" placeholder="Start Date" name="start_date">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-1">
+                            <div class="input-group mb-3">
+                                Finish Date
+                                <input type="datetime-local" class="form-control" placeholder="Finish Date" name="finish_date">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-1">
+                            <div class="input-group mb-3">
+                                Highest Due Date
+                                <input type="datetime-local" class="form-control" placeholder="Highest Due Date" name="due_date">
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <label><h5>Description of the main project.</h5></label>
+                            <div class="form-group mb-3">
+                                <textarea class="form-control" name="description" id="exampleFormControlTextarea1" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <button id="success"
+                                class="btn btn-outline-success btn-lg">Save</button>
+                        </div>
+                    </div>
+                </form>
+                        {% endif %}
+                        
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="row" id="table-borderless">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <h3>Projects</h3>
+                        <p class="command">Work Calender</p>
+                        <label for="date"><u>Today</u> </label>
+                        <p id="date" style="color: black;">{{time}}</p>
+                    </h4>
+                </div>
+                <div class="card-content">
+                    <!-- table with no border -->
+                    <div class="table-responsive">
+                        <table class="table table-borderless mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope='col'>SNo.</th>
+                                    <th scope='col'>Project ID</th>
+                                    <th scope='col'>Project Name</th>
+                                    <th scope='col'>Start Date</th>
+                                    <th scope='col'>Finish Date</th>
+                                    <th scope='col'>Highest Due Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {% for main_project in main_projects %}
+                                <tr>
+                                    <td class="text-bold-500">{{loop.index}}</td>
+                                    <td class="text-bold-500"><a href="/{{main_project.id}}">{{main_project.id}}</a></td>
+                                    <td class="text-bold-500"><a href="/{{main_project.id}}">{{main_project.project_name}}</a></td>
+                                    <td ><a href="/{{main_project.id}}">{{main_project.start_date}}</a></td>
+                                    <td><a href="/{{main_project.id}}">{{main_project.finish_date}}</a></td>
+                                    <td><a href="/{{main_project.id}}">{{main_project.due_date}}</a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock body %}

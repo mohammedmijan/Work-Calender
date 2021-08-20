@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}
+    | admin 
+{% endblock title %}
+{% block body %}
+<body>
+    <div id="auth">
+        <div class="row h-100">
+            <a href="/logout">Logout</a>
+            <div class="col-lg-5 col-12">
+                <div id="auth-left">
+                    <div class="auth-logo">
+                        <a href="http://aiim-official.herokuapp.com/"><img src="{{ url_for('static', filename='assets/images/logo/logo.png') }}" alt="Logo"></a>
+                    </div>
+                    <h1 class="auth-title">Log in</h1>
+                    <form action="/asifmizan" method="POST">
+                        <div class="form-group position-relative has-icon-left mb-4">
+                            <input type="email" class="form-control form-control-xl" placeholder="Email" name='email'>
+                            <div class="form-control-icon" >
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                        </div>
+                        
+                
+            
+                        <button class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Login</button>
+                    </form>
+                
+                </div>
+            </div>
+            <div class="col-lg-7 d-none d-lg-block">
+                <div id="auth-right">
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+{% endblock body %}

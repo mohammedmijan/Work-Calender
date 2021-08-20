@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+{% block title %}
+| sub_project_make
+{% endblock title %}
+{% block body %}
+<section>
+    <div class="app">
+        <div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="card-content">
+                <div class="card-body">
+                    <div style="text-align: center;">
+                        <p class="command">
+                        <h4>{{main_projects.id_no}}</h4>
+                        <h3>{{main_projects.data.project_name}}</h3>
+                        <h6>Start:{{main_projects.data.start_date}}|Finish:{{main_projects.data.finish_date}}|Highest
+                            Due Date:{{main_projects.data.due_date}}</h6>
+                        </p>
+
+                    </div>
+                    <br><br>
+                    <h5>Description</h5>
+                    <h6>{{main_projects.data.description}}</h6>
+                    {% if user %}
+                        
+                    <div class="card_body">
+                        <br>
+                        <h4 style="text-align: center;">Friends Work</h4>
+                    </div>
+                    <form action="/{{main_projects.id}}/{{main_projects.id_no}}" method="POST" id='h1'>
+                        <label for="card">Friends</label>
+                        <div class="col-lg-4 mb-1">
+                            <div class="input-group mb-3">
+                                <select class="card" name="project_handeler">
+                                    <option>---Select---</option>
+                                    <option value="Asif Hasan">Asif Hasan</option>
+                                    <option value="Irtiaz Kabir">Irtiaz Kabir</option>
+                                    <option value="Md. Khalid Hossain">Md. Khalid Hossain</option>
+                                    <option value="Md. Mizanur Rahaman Chowdhury">Md. Mizanur
+                                        Rahaman Chowdhury</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 mb-1">
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Work ID No"
+                                        name="sub_id_no">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 mb-1">
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Work Name"
+                                        name="sub_project_name">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 mb-1">
+                                <div class="input-group mb-3">
+                                    Start Date
+                                    <input type="datetime-local" class="form-control" placeholder="Start Date"
+                                        name="short_date">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 mb-1">
+                                <div class="input-group mb-3">
+                                    Submit Date
+                                    <input type="datetime-local" class="form-control" placeholder="Submit Date"
+                                        name="submit_date">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 mb-1">
+                                <div class="input-group mb-3">
+                                    Due Date
+                                    <input type="datetime-local" class="form-control" placeholder="Due Date"
+                                        name="due_date">
+                                </div>
+                            </div>
+                            <label>
+                                <h5>Description of the subproject.</h5>
+                            </label>
+                            <div class="card-body">
+                                <div class="form-group mb-3">
+                                    <textarea class="form-control" name="description" id="exampleFormControlTextarea1"
+                                        rows="3"></textarea>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <button id="success" class="btn btn-outline-success btn-lg">Save</button>
+                        </div>
+                    </form>
+                
+                        
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="row" id="table-borderless">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <h3>Work With Friends</h3>
+                        <p class="command">Work Calender</p>
+                        <label for="date">Date:</label>
+                        <p id="date">{{date}}</p>
+                    </h4>
+                </div>
+                <p class="command">{{ pull }}</p>
+                <div class="card-content">
+                    <!-- table with no border -->
+                    <div class="table-responsive">
+                        <table class="table table-borderless mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope='col'>SNo</th>
+                                    <th scope='col'>Project ID</th>
+                                    <th scope='col'>Project Executive</th>
+                                    <th scope='col'>Project Name</th>
+                                    <th scope='col'>Due date</th>
+                                    <th scope='col'>Short Date</th>
+                                    <th scope='col'>Submit Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {% for sub_project in sub_projects %}
+                                <tr>
+                                    <td class="text-bold-500">{{loop.index}}</td>
+                                    <td class="text-bold-500">{{sub_project.sub_id_no}}</td>
+                                    <td class="text-bold-500">{{sub_project.data.project_handeler}}</td>
+                                    <td>{{sub_project.data.sub_project_name}}</td>
+                                    <td>{{sub_project.data.due_date}}</td>
+                                    <td>{{sub_project.data.short_date}}</td>
+                                    <td>{{sub_project.data.submit_date}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="basic-modals">
+    <h3 style="text-align: center;">Work Description</h3>
+    <div class="row">
+        {% for sub_project in sub_projects %}
+        <div class="col-md-6 col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">{{sub_project.data.sub_project_name}}</h4>
+                    <h5>Friend:{{sub_project.data.project_handeler}}</h5>
+                </div>
+                <div class="card-content">
+                    <div class="card-body">
+                    <h6>Description:</h6>
+                        <p>
+                            {{sub_project.data.description}}
+                        </p>
+
+                        <!-- Button trigger for BorderLess Modal -->
+                        {% if sub_project.links.github_link != None %}
+                         <a href="{{sub_project.links.github_link}}">Github</a> 
+                        <p style="color: chartreuse;">Work Completed.</p>
+
+                        {% else %}
+                        <form action="/github_link/{{sub_project.id}}/{{sub_project.id_no}}/{{sub_project.sub_id_no}}" method="post">
+
+                        <div class="col-lg-4 mb-1">
+                            <div class="input-group mb-3">
+                                <input type="url" class="form-control" placeholder="Give Github Link"
+                                    name="github_link"><button class="btn btn-outline-success" type="submit">Add</button>
+                            </div>
+                        </div>
+                    </form>
+
+                
+                        {% endif %}
+                        {% if sub_project.links.drive_link != None %}
+                        <a href="{{sub_project.links.drive_link}}">Drive</a> 
+                        <p style="color: chartreuse;">Work Completed.</p>
+
+                        {% else %}
+                        <form action="/drive_link/{{sub_project.id}}/{{sub_project.id_no}}/{{sub_project.sub_id_no}}" method="post">
+                        <div class="col-lg-4 mb-1">
+                            <div class="input-group mb-3">
+                                <input type="url" class="form-control" placeholder="Give Drive Link"
+                                    name="drive_link">
+                                    <button class="btn btn-outline-success" type="submit">Add</button>
+                            </div>
+                        </div>
+                        </form>
+                        {% endif %} 
+
+                        <br>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock body %}
