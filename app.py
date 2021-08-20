@@ -31,6 +31,7 @@ class User(UserMixin, db.Model):
 def user_():
     if request.method == "POST":
         email = request.form["email"]
+        print(email)
         while True:
             user = User.query.filter_by(name=email).first()    
             if not user:
@@ -39,8 +40,11 @@ def user_():
                 db.session.commit()
                 continue
             login_user(user=user)
-            global user_
-            user_ = current_user.name
+            mijan = "mejan601@gmail.com"
+            asif = "asif78h78@gmail.com"
+            if current_user.name == mijan or current_user.name == asif:
+                global user_ 
+                user_ = current_user.name
             return redirect("/")
 
     return render_template("admin.html")
@@ -49,14 +53,13 @@ def user_():
 @login_required
 def logout():
     logout_user()
-    global user_
+    global user_ 
     user_ = None
     return redirect("/")
 
 
 @app.route("/", methods=["GET", "POST"])
 def main_projects():
-    print(user_)
     if request.method == "POST":
         id = request.form["id"]
         project_name = request.form["project_name"]
