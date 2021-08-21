@@ -75,8 +75,8 @@ def main_projects_user(user_id):
 
 @app.route("/")
 def main_projects():
-    name = current_user.is_authenticated
-    if name:
+    name = current_user
+    if name.is_authenticated == True:
         return redirect(f"/logged/{name.id}")
     main_projects = mongo.db.main_projects.find()
     main_projects = loads(dumps(main_projects))
