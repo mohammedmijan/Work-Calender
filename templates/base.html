@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Work Calender {% block title %}
-    {% endblock title %}</title>
+        {% endblock title %}</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="icon" href="{{ url_for('static', filename='assets/images/logo/logo.png') }}">
@@ -39,24 +39,25 @@
             font-weight: 1000;
             font-size: 150%;
         }
+
         .problems {
             text-align: center;
             background: rgb(162, 162, 235);
-            color :red;
+            color: red;
         }
     </style>
-        <div class="page-heading">
-<div class="container">
+    <div class="page-heading">
+        <div class="container">
             {% block body %}
 
 
             {% endblock %}
-            </div>
-            
-            <div class="command">
-                Thank You.
-            </div>
         </div>
+
+        <div class="command">
+            Thank You.
+        </div>
+    </div>
     </div>
 </body>
 

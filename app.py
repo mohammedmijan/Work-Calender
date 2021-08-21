@@ -5,6 +5,8 @@ from bson.json_util import loads, dumps
 from flask_login import login_required, login_user, LoginManager, logout_user, current_user, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 import time
+from bson.json_util import loads, dumps
+
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = SECRET_VAR["SECRET"]
@@ -73,6 +75,9 @@ def main_projects_user(user_id):
 
 @app.route("/")
 def main_projects():
+    name = current_user.is_authenticated
+    if name:
+        return redirect(f"/logged/{name.id}")
     main_projects = mongo.db.main_projects.find()
     main_projects = loads(dumps(main_projects))
     main_projects.reverse()
