@@ -2,7 +2,7 @@ from static.modules.costant_var import *
 from flask import Flask , render_template, request, redirect
 from flask_pymongo import PyMongo
 from bson.json_util import loads, dumps
-from flask_login import login_required, login_user, LoginManager, logout_user, current_user, UserMixin,AnonymousUserMixin
+from flask_login import login_required, login_user, LoginManager, logout_user, current_user, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 import time
 
@@ -15,10 +15,9 @@ app.config["MONGO_URI"] = f"mongodb+srv://{SECRET_VAR['SERVER_NAME']}:{SECRET_VA
 mongo = PyMongo(app)
 db = SQLAlchemy(app)
 
-
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = ""
+login_manager.login_view = "user_"
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
@@ -40,12 +39,8 @@ def user_():
                 db.session.commit()
                 continue
             login_user(user=user)
-            mijan = "mejan601@gmail.com"
-            asif = "asif78h78@gmail.com"
-            if current_user.name == mijan or current_user.name == asif:
-                global user_ 
-                user_ = current_user.name
-            return redirect("/")
+            user_id = current_user.id
+            return redirect(f"/logged/{user_id}")
 
     return render_template("admin.html")
 
@@ -53,13 +48,12 @@ def user_():
 @login_required
 def logout():
     logout_user()
-    global user_ 
-    user_ = None
     return redirect("/")
 
 
-@app.route("/", methods=["GET", "POST"])
-def main_projects():
+@app.route("/logged/<int:user_id>", methods=["GET", "POST"])
+@login_required
+def main_projects_user(user_id):
     if request.method == "POST":
         id = request.form["id"]
         project_name = request.form["project_name"]
@@ -70,16 +64,23 @@ def main_projects():
         main_save = {"id":int(id), "project_name":project_name, "description":description,"start_date":start_date,
          "finish_date":finish_date, "due_date":due_date}
         mongo.db.main_projects.insert_one(main_save)
-        return redirect("/")
+        return redirect(f"/logged/{user_id}/{id}")
 
     main_projects = mongo.db.main_projects.find()
     main_projects = loads(dumps(main_projects))
     main_projects.reverse()
-    return render_template("main_projects.html", main_projects=main_projects, time=time.asctime(), user=user_)
+    return render_template("main_projects.html", main_projects=main_projects, time=time.asctime(), user=current_user)
+
+@app.route("/")
+def main_projects():
+    main_projects = mongo.db.main_projects.find()
+    main_projects = loads(dumps(main_projects))
+    main_projects.reverse()
+    return render_template("main_projects.html", main_projects=main_projects, time=time.asctime())
 
 
-@app.route("/<int:id>", methods=["GET", "POST"])
-def main_project_make(id):
+@app.route("/logged/<int:user_id>/<int:id>", methods =["GET","POST"])
+def main_project_make_user(user_id,id):
     if request.method == "POST":
         id_no = request.form["id_no"]
         project_name = request.form["project_name"]
@@ -90,18 +91,29 @@ def main_project_make(id):
         save_server = {"id":id,"id_no":int(id_no), "data":{"project_name":project_name, "start_date":start_date,
          "finish_date":finish_date, "due_date":due_date, "description":description}}
         mongo.db.sub_projects.insert_one(save_server)
-        return redirect(f"/{id}")
+        return redirect(f"/logged/{user_id}/{id}/{id_no}")
 
     main_projects = mongo.db.sub_projects.find({"id":id})
     main_projects= loads(dumps(main_projects))
     main_projects.reverse()
     projects = mongo.db.main_projects.find_one({"id":id})
     projects= loads(dumps(projects))
-    return render_template("main_project_make.html", main_projects=main_projects,projects=projects, time=time.asctime(),user=user_)
+    return render_template("main_project_make.html", main_projects=main_projects,projects=projects, time=time.asctime(),user=current_user)
 
-@app.route("/<int:id>/<int:id_no>", methods=["GET", "POST"])
-def sub_project_make(id,id_no):
-    print(id , id_no)
+@app.route("/<int:id>")
+def main_project_make(id):
+    main_projects = mongo.db.sub_projects.find({"id":id})
+    main_projects= loads(dumps(main_projects))
+    main_projects.reverse()
+    projects = mongo.db.main_projects.find_one({"id":id})
+    projects= loads(dumps(projects))
+    return render_template("main_project_make.html", main_projects=main_projects,projects=projects, time=time.asctime())
+
+
+
+@app.route("/logged/<int:user_id>/<int:id>/<int:id_no>", methods=["GET", "POST"])
+@login_required
+def sub_project_make_user(user_id,id,id_no):
     if request.method == "POST":
         project_handeler = request.form["project_handeler"]
         sub_id_no = request.form["sub_id_no"]
@@ -116,7 +128,7 @@ def sub_project_make(id,id_no):
         "short_date":short_date,"submit_date":submit_date,
         "due_date":due_date, "description":description}, "links":{"github_link":None, "drive_link":None}}
         mongo.db.sub_segments_projects.insert_one(save_sub_project)
-        return redirect(f"/{id}/{id_no}")
+        return redirect(f"/logged/{user_id}/{id}/{id_no}")
         
 
     main_projects = mongo.db.sub_projects.find_one({"id":id,"id_no":id_no})
@@ -124,7 +136,17 @@ def sub_project_make(id,id_no):
     sub_projects = mongo.db.sub_segments_projects.find({"id":id,"id_no":id_no})
     sub_projects = loads(dumps(sub_projects))
     sub_projects.reverse()
-    return render_template("sub_project_make.html", main_projects=main_projects, sub_projects=sub_projects, time=time.asctime(), user=user_)
+    return render_template("sub_project_make.html", main_projects=main_projects, sub_projects=sub_projects, time=time.asctime(), user=current_user)
+
+@app.route("/<int:id>/<int:id_no>")
+def sub_project_make(id,id_no):
+    main_projects = mongo.db.sub_projects.find_one({"id":id,"id_no":id_no})
+    main_projects = loads(dumps(main_projects))
+    sub_projects = mongo.db.sub_segments_projects.find({"id":id,"id_no":id_no})
+    sub_projects = loads(dumps(sub_projects))
+    sub_projects.reverse()
+    return render_template("sub_project_make.html", main_projects=main_projects, sub_projects=sub_projects, time=time.asctime())
+
 
 @app.route("/github_link/<int:id>/<int:id_no>/<int:sub_id_no>", methods=["GET", "POST"])
 def sub_project_link(id, id_no, sub_id_no):
@@ -158,5 +180,4 @@ def sub_project_link_(id, id_no, sub_id_no):
 
 
 if __name__=="__main__":
-    user_ = None
     app.run(port=1234, host="0.0.0.0",debug=True)

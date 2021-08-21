@@ -3,9 +3,14 @@
 | main_project_make
 {% endblock title %}
 {% block body %}
+{% if user %}
 <section>
+    <a href="/logout">Logout</a>
+
     <div class="row">
         <div class="col">
+    {{user.name}}
+
             <div class="card-content">
                 <div class="card-body">
                     <div style="text-align: center;">
@@ -17,14 +22,14 @@
                     </div><br><br>
                     <h5>Description</h5>
                     <h6>{{projects.description}}</h6><br><br>
-                    {% if user %}
-                    {{user}}
+                   
+                    
                         <div class="card_body">
                             <br>
                             <h4 style="text-align: center;">Sub Project Details</h4>
                         </div>
             
-                    <form action="/{{projects.id}}" method="POST" id='h1'>
+                    <form action="/logged/{{user.id}}/{{projects.id}}" method="POST" id='h1'>
                         <div class="row">
                             <div class="col-lg-4 mb-1">
                                 <div class="input-group mb-3">
@@ -67,7 +72,6 @@
                             </div>
                         </div>
                     </form>
-                    {% endif %}
 
                 </div>
             </div>
@@ -75,6 +79,56 @@
     </div>
 </section>
 
+<section class="section">
+    <div class="row" id="table-borderless">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <h3>Sub Projects</h3>
+                        <p class="command">Work Calender</p>
+                        <label for="date"><u>Today</u> </label>
+                        <p id="date" style="color: black;">{{time}}</p>
+                    </h4>
+                </div>
+                <div class="card-content">
+                    <!-- table with no border -->
+                    <div class="table-responsive">
+                        <table class="table table-borderless mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope='col'>SNo.</th>
+                                    <th scope='col'>Project ID</th>
+                                    <th scope='col'>Project Name</th>
+                                    <th scope='col'>Start Date</th>
+                                    <th scope='col'>Finish Date</th>
+                                    <th scope='col'>Highest Due Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {% for main_project in main_projects %}
+                        .
+                                    <td class="text-bold-500">{{loop.index}}</td>
+                                    <td class="text-bold-500"><a href="/logged/{{user.id}}/{{projects.id}}/{{main_project.id_no}}">{{main_project.id_no}}</a></td>
+                                    <td class="text-bold-500"><a href="/logged/{{user.id}}/{{projects.id}}/{{main_project.id_no}}">{{main_project.data.project_name}}</a></td>
+                                    <td ><a href="/logged/{{projects.id}}/{{user.id}}/{{main_project.id_no}}">{{main_project.data.start_date}}</a></td>
+                                    <td><a href="/logged/{{projects.id}}/{{user.id}}/{{main_project.id_no}}">{{main_project.data.finish_date}}</a></td>
+                                    <td><a href="/logged/{{projects.id}}/{{user.id}}/{{main_project.id_no}}">{{main_project.data.due_date}}</a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    
+{% else %}
+    
 <section class="section">
     <div class="row" id="table-borderless">
         <div class="col-12">
@@ -121,5 +175,6 @@
         </div>
     </div>
 </section>
+{% endif %}
 
 {% endblock body %}

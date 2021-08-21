@@ -6,11 +6,14 @@
 <section>
     <div class="app">
         <div>
-
+            <a href="/logout">Logout</a>
         </div>
+
     </div>
     <div class="row">
         <div class="col">
+    {{user.name}}
+
             <div class="card-content">
                 <div class="card-body">
                     <div style="text-align: center;">
@@ -26,12 +29,13 @@
                     <h5>Description</h5>
                     <h6>{{main_projects.data.description}}</h6>
                     {% if user %}
-                    {{user}}
+
+                
                     <div class="card_body">
                         <br>
                         <h4 style="text-align: center;">Friends Work</h4>
                     </div>
-                    <form action="/{{main_projects.id}}/{{main_projects.id_no}}" method="POST" id='h1'>
+                    <form action="/logged/{{user.id}}/{{main_projects.id}}/{{main_projects.id_no}}" method="POST" id='h1'>
                         <label for="card">Friends</label>
                         <div class="col-lg-4 mb-1">
                             <div class="input-group mb-3">

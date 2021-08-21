@@ -3,7 +3,10 @@
 | main_projects
 {% endblock title %}
 {% block body %}
+{% if user %}
 <section>
+    <a href="/logout">Logout</a>
+
     <div class="row">
         <div class="col">
             <div class="card-content">
@@ -11,13 +14,13 @@
                     <div style="text-align: center;">
                         <p class="command">
                         <h2>AIIM</h2>
-                        {% if user %}
-                        {{user}}
+    {{user.name}}
+                        
                         <h3>Create Your Organization Work Calender</h3>
                     </p>
                     <h1>Projects</h1>
                 </div>
-                <form action="/" method="POST" id='h1'>
+                <form action="/logged/{{user.id}}" method="POST" id='h1'>
                     <div class="row">
                         <div class="col-lg-4 mb-1">
                             <div class="input-group mb-3">
@@ -60,13 +63,63 @@
                         </div>
                     </div>
                 </form>
-                        {% endif %}
+                   
+                            
+                        
                         
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<section class="section">
+    <div class="row" id="table-borderless">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <h3>Projects</h3>
+                        <p class="command">Work Calender</p>
+                        <label for="date"><u>Today</u> </label>
+                        <p id="date" style="color: black;">{{time}}</p>
+                    </h4>
+                </div>
+                <div class="card-content">
+                    <!-- table with no border -->
+                    <div class="table-responsive">
+                        <table class="table table-borderless mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope='col'>SNo.</th>
+                                    <th scope='col'>Project ID</th>
+                                    <th scope='col'>Project Name</th>
+                                    <th scope='col'>Start Date</th>
+                                    <th scope='col'>Finish Date</th>
+                                    <th scope='col'>Highest Due Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {% for main_project in main_projects %}
+                                <tr>
+                                    <td class="text-bold-500">{{loop.index}}</td>
+                                    <td class="text-bold-500"><a href="/logged/{{user.id}}/{{main_project.id}}">{{main_project.id}}</a></td>
+                                    <td class="text-bold-500"><a href="/logged/{{user.id}}/{{main_project.id}}">{{main_project.project_name}}</a></td>
+                                    <td ><a href="/logged/{{user.id}}/{{main_project.id}}">{{main_project.start_date}}</a></td>
+                                    <td><a href="/logged/{{user.id}}/{{main_project.id}}">{{main_project.finish_date}}</a></td>
+                                    <td><a href="/logged/{{user.id}}/{{main_project.id}}">{{main_project.due_date}}</a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% else %}
 
 <section class="section">
     <div class="row" id="table-borderless">
@@ -114,5 +167,6 @@
         </div>
     </div>
 </section>
-
+                            
+                        {% endif %}
 {% endblock body %}
