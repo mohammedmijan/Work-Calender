@@ -2,7 +2,7 @@ from static.modules.costant_var import *
 from flask import Flask , render_template, request, redirect
 from flask_pymongo import PyMongo
 from bson.json_util import loads, dumps
-from flask_login import login_required, login_user, LoginManager, logout_user, current_user, UserMixin
+from flask_login import login_required, login_user, LoginManager, logout_user, current_user, UserMixin, utils
 from flask_sqlalchemy import SQLAlchemy
 import time
 from bson.json_util import loads, dumps
